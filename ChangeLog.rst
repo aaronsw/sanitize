@@ -3,3 +3,4 @@
 ----
 
 * Feature: Add ``ChangeLog.rst`` file.
+* Feature: Add ``AUTHORS.rst`` file.
