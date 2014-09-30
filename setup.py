@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
    name = "sanitize",
    version = "0.33",
-   description = "bringing sanitiy to world of messed-up data",
+   description = "Bringing sanitiy to world of messed-up data",
    author = "Aaron Swartz",
    author_email = "me@aaronsw.com",
    url='http://www.aaronsw.com/2002/sanitize/',
