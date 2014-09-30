@@ -7,6 +7,8 @@ setup(
    long_description=open('README.md').read(),
    author = "Aaron Swartz",
    author_email = "me@aaronsw.com",
+   maintainer='Alireza Savand',
+   maintainer_email='alireza.savand@gmail.com',
    url='http://www.aaronsw.com/2002/sanitize/',
    license=open('LICENCE').read(),
    classifiers=[
