@@ -8,6 +8,7 @@ setup(
    author = "Aaron Swartz",
    author_email = "me@aaronsw.com",
    url='http://www.aaronsw.com/2002/sanitize/',
+   license=open('LICENCE').read(),
    classifiers=[
        'Development Status :: 5 - Production/Stable',
        'Intended Audience :: Developers',
