@@ -1,11 +1,6 @@
 """
 sanitize: bringing sanitiy to world of messed-up data
 """
-
-__author__ = ["Mark Pilgrim <http://diveintomark.org/>",
-              "Aaron Swartz <http://www.aaronsw.com/>"]
-__contributors__ = ["Sam Ruby <http://intertwingly.net/>"]
-__license__ = "BSD"
 __version__ = "0.33"
 
 _debug = 0
