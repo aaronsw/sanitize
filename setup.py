@@ -4,6 +4,7 @@ setup(
    name = "sanitize",
    version = "0.33",
    description = "Bringing sanitiy to world of messed-up data",
+   long_description=open('README.md').read(),
    author = "Aaron Swartz",
    author_email = "me@aaronsw.com",
    url='http://www.aaronsw.com/2002/sanitize/',
