@@ -2,7 +2,7 @@
 sanitize: bringing sanitiy to world of messed-up data
 """
 
-__author__ = ["Mark Pilgrim <http://diveintomark.org/>", 
+__author__ = ["Mark Pilgrim <http://diveintomark.org/>",
               "Aaron Swartz <http://www.aaronsw.com/>"]
 __contributors__ = ["Sam Ruby <http://intertwingly.net/>"]
 __license__ = "BSD"
@@ -37,16 +37,16 @@ except:
 class _BaseHTMLProcessor(sgmllib.SGMLParser):
     elements_no_end_tag = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr',
       'img', 'input', 'isindex', 'link', 'meta', 'param']
-    
+
     _r_barebang = re.compile(r'<!((?!DOCTYPE|--|\[))', re.IGNORECASE)
     _r_bareamp = re.compile("&(?!#\d+;|#x[0-9a-fA-F]+;|\w+;)")
     _r_shorttag = re.compile(r'<([^<\s]+?)\s*/>')
-    
+
     def __init__(self, encoding):
         self.encoding = encoding
         if _debug: sys.stderr.write('entering BaseHTMLProcessor, encoding=%s\n' % self.encoding)
         sgmllib.SGMLParser.__init__(self)
-        
+
     def reset(self):
         self.pieces = []
         sgmllib.SGMLParser.reset(self)
@@ -57,12 +57,12 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
             return '<' + tag + ' />'
         else:
             return '<' + tag + '></' + tag + '>'
-        
+
     def feed(self, data):
         if _debug: sys.stderr.write('_BaseHTMLProcessor, feed, data=%s\n' % repr(data))
         data = self._r_barebang.sub(r'&lt;!\1', data)
         data = self._r_bareamp.sub("&amp;", data)
-        data = self._r_shorttag.sub(self._shorttag_replace, data) 
+        data = self._r_shorttag.sub(self._shorttag_replace, data)
         if self.encoding and type(data) == type(u''):
             data = data.encode(self.encoding)
         sgmllib.SGMLParser.feed(self, data)
@@ -78,12 +78,12 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         # attrs is a list of (attr, value) tuples
         # e.g. for <pre class='screen'>, tag='pre', attrs=[('class', 'screen')]
         if _debug: sys.stderr.write('_BaseHTMLProcessor, unknown_starttag, tag=%s\n' % tag)
-        
+
         def attrquote(data):
             data = self._r_bareamp.sub("&amp;", data)
             data = data.replace('"', '&quot;')
             return data
-        
+
         newattrs = []
         # hack to reverse attribute decoding in py2.5
         for key, value in attrs:
@@ -94,7 +94,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
                 newvalue.append(c)
             newattrs.append((key, ''.join(newvalue)))
         strattrs = ''.join([' %s="%s"' % (key, attrquote(value)) for key, value in newattrs])
-        
+
         if tag in self.elements_no_end_tag:
             self.pieces.append('<%(tag)s%(strattrs)s />' % locals())
         else:
@@ -110,7 +110,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         # called for each character reference, e.g. for '&#160;', ref will be '160'
         # Reconstruct the original character reference.
         self.pieces.append('&#%(ref)s;' % locals())
-        
+
     def handle_entityref(self, ref):
         # called for each entity reference, e.g. for '&copy;', ref will be 'copy'
         # Reconstruct the original entity reference.
@@ -122,12 +122,12 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         # Store the original text verbatim.
         if _debug: sys.stderr.write('_BaseHTMLProcessor, handle_text, text=%s\n' % text)
         self.pieces.append(text)
-        
+
     def handle_comment(self, text):
         # called for each HTML comment, e.g. <!-- insert Javascript code here -->
         # Reconstruct the original comment.
         self.pieces.append('<!--%(text)s-->' % locals())
-        
+
     def handle_pi(self, text):
         # called for each processing instruction, e.g. <?instruction>
         # Reconstruct original processing instruction.
@@ -139,7 +139,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         #     "http://www.w3.org/TR/html4/loose.dtd">
         # Reconstruct original DOCTYPE
         self.pieces.append('<!%(text)s>' % locals())
-        
+
     _new_declname_match = re.compile(r'[a-zA-Z][-_.a-zA-Z0-9:]*\s*').match
     def _scan_name(self, i, declstartpos):
         rawdata = self.rawdata
@@ -160,20 +160,20 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
 
     def output(self):
         '''Return processed HTML as a single string'''
-        return ''.join(self.pieces) 
+        return ''.join(self.pieces)
         # used to be: [str(p) for p in self.pieces]
         # not sure why... -- ASw
 
 class _HTMLSanitizer(_BaseHTMLProcessor):
     acceptable_elements = ['a', 'abbr', 'acronym', 'address', 'area', 'b', 'big',
-      'blockquote', 'br', 'button', 'caption', 'center', 'cite', 'code', 'col', 
+      'blockquote', 'br', 'button', 'caption', 'center', 'cite', 'code', 'col',
       'colgroup', 'dd', 'del', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'fieldset',
       'font', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'input',
-      'ins', 'kbd', 'label', 'legend', 'li', 'map', 'menu', 'ol', 'optgroup', 
+      'ins', 'kbd', 'label', 'legend', 'li', 'map', 'menu', 'ol', 'optgroup',
       'option', 'p', 'pre', 'q', 's', 'samp', 'select', 'small', 'span', 'strike',
-      'strong', 'sub', 'sup', 'table', 'textarea', 'tbody', 'td', 'tfoot', 'th', 
+      'strong', 'sub', 'sup', 'table', 'textarea', 'tbody', 'td', 'tfoot', 'th',
       'thead', 'tr', 'tt', 'u', 'ul', 'var']
-    
+
     acceptable_attributes = ['abbr', 'accept', 'accept-charset', 'accesskey',
       'action', 'align', 'alt', 'axis', 'border', 'cellpadding', 'cellspacing',
       'char', 'charoff', 'charset', 'checked', 'cite', 'class', 'clear', 'cols',
@@ -184,23 +184,23 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
       'rel', 'rev', 'rows', 'rowspan', 'rules', 'scope', 'selected', 'shape', 'size',
       'span', 'src', 'start', 'summary', 'tabindex', 'target', 'title', 'type',
       'usemap', 'valign', 'value', 'vspace', 'width']
-    
+
     # http://www.iana.org/assignments/uri-schemes.html
     acceptable_uri_schemes = [
-      'cid', 'crid', 'data', 'dav', 'dict', 'dns', 'fax', 
+      'cid', 'crid', 'data', 'dav', 'dict', 'dns', 'fax',
       'ftp', 'go', 'gopher', 'h323', 'http', 'https', 'im',
       'imap', 'info', 'ipp', 'iris.beep', 'ldap', 'mailto',
       'mid', 'modem', 'news', 'nfs', 'nntp', 'pres', 'rtsp',
-      'sip', 'sips', 'snmp', 'tag', 'tel', 'telnet', 'tftp', 
+      'sip', 'sips', 'snmp', 'tag', 'tel', 'telnet', 'tftp',
       'urn',
-      
+
       # unspecified
       # http://esw.w3.org/topic/UriSchemes
-      
+
       'aim', 'irc', 'feed', 'webcal']
 
     ignorable_elements = ['script', 'applet', 'style']
-    
+
     relative_uris = [('a', 'href'),
                      ('applet', 'codebase'),
                      ('area', 'href'),
@@ -226,7 +226,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
                      ('object', 'usemap'),
                      ('q', 'cite'),
                      ('script', 'src')]
-    
+
     def __init__(self, baseuri, encoding, required_attributes=None):
         _BaseHTMLProcessor.__init__(self, encoding)
         self.baseuri = baseuri
@@ -256,15 +256,15 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         _BaseHTMLProcessor.feed(self, data)
         while self.tag_stack:
             _BaseHTMLProcessor.unknown_endtag(self, self.tag_stack.pop())
-        
+
     def unknown_starttag(self, tag, attrs):
         if tag in self.ignorable_elements:
             self.ignore_level += 1
             return
-        
+
         if self.ignore_level:
             return
-        
+
         if tag in self.acceptable_elements:
             attrs = self.normalize_attrs(attrs)
             attrs = [(key, value) for key, value in attrs if key in self.acceptable_attributes]
@@ -272,19 +272,19 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
             if self.required_attributes and tag in self.required_attributes:
                 attrs = [(key, value) for key, value in attrs if key not in [k for k, v in self.required_attributes[tag]]]
                 attrs += self.required_attributes[tag]
-            
+
             if tag not in self.elements_no_end_tag:
                 self.tag_stack.append(tag)
             _BaseHTMLProcessor.unknown_starttag(self, tag, attrs)
-        
+
     def unknown_endtag(self, tag):
         if tag in self.ignorable_elements:
             self.ignore_level -= 1
             return
-        
+
         if self.ignore_level:
             return
-        
+
         if tag in self.acceptable_elements and tag not in self.elements_no_end_tag:
             match = False
             while self.tag_stack:
@@ -412,7 +412,7 @@ def _detectbom(text, bom_map=unicode_bom_map):
 
 def characters(text, isXML=False, guess=None):
     """
-    Takes a string text of unknown encoding and tries to 
+    Takes a string text of unknown encoding and tries to
     provide a Unicode string for it.
     """
     _triedEncodings = []
@@ -425,10 +425,10 @@ def characters(text, isXML=False, guess=None):
             except UnicodeDecodeError:
                 pass
             _triedEncodings.append(encoding)
-    
+
     return (
-      tryEncoding(guess) or 
-      tryEncoding(_detectbom(text)) or 
+      tryEncoding(guess) or
+      tryEncoding(_detectbom(text)) or
       isXML and tryEncoding(_detectbom(text, xml_bom_map)) or
       tryEncoding(_chardet(text)) or
       tryEncoding('utf8') or
