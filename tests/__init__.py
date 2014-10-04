@@ -14,9 +14,9 @@ def HTML(a, b, baseuri=None, addnofollow=False):
     try:
         assert sanitize.HTML(a, baseuri=baseuri, addnofollow=addnofollow) == b
     except AssertionError:
-        print ' in:', repr(a)
-        print 'out:', repr(sanitize.HTML(a, baseuri=baseuri))
-        print 'exp:', repr(b)
+        print(' in:', repr(a))
+        print('out:', repr(sanitize.HTML(a, baseuri=baseuri)))
+        print('exp:', repr(b))
         raise
 
 ## basics
