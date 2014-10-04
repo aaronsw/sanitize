@@ -12,7 +12,7 @@ import chardet
 from sanitize import config
 
 
-__version__ = "0.33"
+__version__ = (0, 33)
 
 if config.DEBUG:
     import chardet.constants

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
    name = "sanitize",
-   version = "0.33",
+   version=".".join(map(str, __import__('sanitize').__version__)),
    description = "Bringing sanitiy to world of messed-up data",
    long_description=open('README.md').read(),
    author = "Aaron Swartz",
