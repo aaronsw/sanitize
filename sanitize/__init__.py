@@ -1,18 +1,18 @@
 """
 sanitize: bringing sanitiy to world of messed-up data
 """
-from sanitize import config
-
-__version__ = "0.33"
-
-
-
+import string
 import sgmllib
 import re
 import urlparse
 import sys
+
 import chardet
 
+from sanitize import config
+
+
+__version__ = "0.33"
 
 if config.DEBUG:
     import chardet.constants
@@ -30,7 +30,9 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
 
     def __init__(self, encoding):
         self.encoding = encoding
-        if config.DEBUG: sys.stderr.write('entering BaseHTMLProcessor, encoding=%s\n' % self.encoding)
+        if config.DEBUG:
+            sys.stderr.write('entering BaseHTMLProcessor, encoding=%s\n' % self.encoding)
+
         sgmllib.SGMLParser.__init__(self)
 
     def reset(self):
@@ -45,29 +47,36 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
             return '<' + tag + '></' + tag + '>'
 
     def feed(self, data):
-        if config.DEBUG: sys.stderr.write('_BaseHTMLProcessor, feed, data=%s\n' % repr(data))
+        if config.DEBUG:
+            sys.stderr.write('_BaseHTMLProcessor, feed, data=%s\n' % repr(data))
+
         data = self._r_barebang.sub(r'&lt;!\1', data)
         data = self._r_bareamp.sub("&amp;", data)
         data = self._r_shorttag.sub(self._shorttag_replace, data)
+
         if self.encoding and type(data) == type(u''):
             data = data.encode(self.encoding)
+
         sgmllib.SGMLParser.feed(self, data)
 
     def normalize_attrs(self, attrs):
         # utility method to be called by descendants
         attrs = [(k.lower(), v) for k, v in attrs]
         attrs = [(k, k in ('rel', 'type') and v.lower() or v) for k, v in attrs]
+
         return attrs
 
     def unknown_starttag(self, tag, attrs):
         # called for each start tag
         # attrs is a list of (attr, value) tuples
         # e.g. for <pre class='screen'>, tag='pre', attrs=[('class', 'screen')]
-        if config.DEBUG: sys.stderr.write('_BaseHTMLProcessor, unknown_starttag, tag=%s\n' % tag)
+        if config.DEBUG:
+            sys.stderr.write('_BaseHTMLProcessor, unknown_starttag, tag=%s\n' % tag)
 
         def attrquote(data):
             data = self._r_bareamp.sub("&amp;", data)
             data = data.replace('"', '&quot;')
+
             return data
 
         newattrs = []
@@ -79,6 +88,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
                     c = '&#' + str(ord(c)) + ';'
                 newvalue.append(c)
             newattrs.append((key, ''.join(newvalue)))
+
         strattrs = ''.join([' %s="%s"' % (key, attrquote(value)) for key, value in newattrs])
 
         if tag in self.elements_no_end_tag:
@@ -106,7 +116,9 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         # called for each block of plain text, i.e. outside of any tag and
         # not containing any character or entity references
         # Store the original text verbatim.
-        if config.DEBUG: sys.stderr.write('_BaseHTMLProcessor, handle_text, text=%s\n' % text)
+        if config.DEBUG:
+            sys.stderr.write('_BaseHTMLProcessor, handle_text, text=%s\n' % text)
+
         self.pieces.append(text)
 
     def handle_comment(self, text):
@@ -141,11 +153,12 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
             return name.lower(), m.end()
         else:
             self.handle_data(rawdata)
-#            self.updatepos(declstartpos, i)
             return None, -1
 
     def output(self):
-        '''Return processed HTML as a single string'''
+        """
+        Return processed HTML as a single string
+        """
         return ''.join(self.pieces)
         # used to be: [str(p) for p in self.pieces]
         # not sure why... -- ASw
@@ -241,11 +254,14 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 def HTML(htmlSource, encoding='utf8', baseuri=None, required_attributes=None, addnofollow=False):
     if not required_attributes:
         required_attributes = {}
+
     if addnofollow:
         required_attributes['a'] = [('rel', 'nofollow')]
+
     p = _HTMLSanitizer(baseuri, encoding, required_attributes)
     p.feed(htmlSource)
     data = p.output()
+
     if config.TIDY_MARKUP:
         # loop through list of preferred Tidy interfaces looking for one that's installed,
         # then set up a common _tidy function to wrap the interface-specific API.
@@ -265,6 +281,7 @@ def HTML(htmlSource, encoding='utf8', baseuri=None, required_attributes=None, ad
                     break
             except:
                 pass
+
         if _tidy:
             utf8 = type(data) == type(u'')
             if utf8:
@@ -279,18 +296,20 @@ def HTML(htmlSource, encoding='utf8', baseuri=None, required_attributes=None, ad
             if data.count('</body'):
                 data = data.split('</body', 1)[0]
     data = data.strip().replace('\r\n', '\n')
+
     return data
 
 
 _ebcdic_to_ascii_map = None
 def _ebcdic_to_ascii(s):
     global _ebcdic_to_ascii_map
+
     if not _ebcdic_to_ascii_map:
         emap = config.EMAP
-        import string
-        _ebcdic_to_ascii_map = string.maketrans( \
-            ''.join(map(chr, range(256))), ''.join(map(chr, emap)))
+        _ebcdic_to_ascii_map = string.maketrans(''.join(map(chr, range(256))), ''.join(map(chr, emap)))
+
     return s.translate(_ebcdic_to_ascii_map)
+
 
 def _startswithbom(text, bom):
     for i, c in enumerate(bom):
@@ -300,13 +319,17 @@ def _startswithbom(text, bom):
         else:
             if text[i] != c:
                 return False
+
     return True
+
 
 def _detectbom(text, bom_map=config.UNICODE_BOM_MAP):
     for bom, encoding in bom_map.iteritems():
         if _startswithbom(text, bom):
             return encoding
+
     return None
+
 
 def characters(text, isXML=False, guess=None):
     """
