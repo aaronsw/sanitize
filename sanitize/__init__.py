@@ -18,19 +18,15 @@ import sgmllib
 import re
 import urlparse
 import sys
+import chardet
 
-# chardet library auto-detects character encodings
-# Download from http://chardet.feedparser.org/
-try:
-    import chardet
-    if _debug:
-        import chardet.constants
-        chardet.constants._debug = 1
 
-    _chardet = lambda data: chardet.detect(data)['encoding']
-except:
-    chardet = None
-    _chardet = lambda data: None
+if config.DEBUG:
+    import chardet.constants
+    chardet.constants._debug = 1
+
+_chardet = lambda data: chardet.detect(data)['encoding']
+
 
 class _BaseHTMLProcessor(sgmllib.SGMLParser):
     elements_no_end_tag = ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr',
