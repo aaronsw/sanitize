@@ -4,4 +4,4 @@
 
 * Feature: Add ``ChangeLog.rst`` file.
 * Feature: Add ``AUTHORS.rst`` file.
-* Feature: Add ``setup.cfg` for wheel support.`
+* Feature: Add ``setup.cfg`` for wheel support.`
