@@ -6,9 +6,7 @@ import sgmllib
 import re
 import urlparse
 import sys
-
 import chardet
-
 from sanitize import config
 
 
@@ -22,7 +20,7 @@ if config.DEBUG:
 _chardet = lambda data: chardet.detect(data)['encoding']
 
 
-class _BaseHTMLProcessor(sgmllib.SGMLParser):
+class BaseHTMLProcessor(sgmllib.SGMLParser):
     elements_no_end_tag = config.BASE_HTML_PROCESSOR__ELEMENTS_NO_END_TAGS
 
     _r_barebang = re.compile(r'<!((?!DOCTYPE|--|\[))', re.IGNORECASE)
@@ -49,7 +47,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
 
     def feed(self, data):
         if config.DEBUG:
-            sys.stderr.write('_BaseHTMLProcessor, feed, data=%s\n' % repr(data))
+            sys.stderr.write('BaseHTMLProcessor, feed, data=%s\n' % repr(data))
 
         data = self._r_barebang.sub(r'&lt;!\1', data)
         data = self._r_bareamp.sub("&amp;", data)
@@ -72,7 +70,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         # attrs is a list of (attr, value) tuples
         # e.g. for <pre class='screen'>, tag='pre', attrs=[('class', 'screen')]
         if config.DEBUG:
-            sys.stderr.write('_BaseHTMLProcessor, unknown_starttag, tag=%s\n' % tag)
+            sys.stderr.write('BaseHTMLProcessor, unknown_starttag, tag=%s\n' % tag)
 
         def attrquote(data):
             data = self._r_bareamp.sub("&amp;", data)
@@ -118,7 +116,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         # not containing any character or entity references
         # Store the original text verbatim.
         if config.DEBUG:
-            sys.stderr.write('_BaseHTMLProcessor, handle_text, text=%s\n' % text)
+            sys.stderr.write('BaseHTMLProcessor, handle_text, text=%s\n' % text)
 
         self.pieces.append(text)
 
@@ -166,7 +164,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         # not sure why... -- ASw
 
 
-class _HTMLSanitizer(_BaseHTMLProcessor):
+class HTMLSanitizer(BaseHTMLProcessor):
     acceptable_elements = config.HTML_SANITIZER__ACCEPTABLE_ELEMENTS
     acceptable_attributes = config.HTML_SANITIZER__ACCEPTABLE_ATTRIBUTES
     acceptable_uri_schemes = config.HTML_SANITIZER__ACCEPTABLE_URI_SCHEMES
@@ -174,7 +172,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
     relative_uris = config.HTML_SANITIZER__RELATIVE_URIS
 
     def __init__(self, baseuri, encoding, required_attributes=None):
-        _BaseHTMLProcessor.__init__(self, encoding)
+        BaseHTMLProcessor.__init__(self, encoding)
         self.baseuri = baseuri
         self.required_attributes = required_attributes
         # urlparse caches URL parsing for some reason
@@ -194,14 +192,14 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
             return uri
 
     def reset(self):
-        _BaseHTMLProcessor.reset(self)
+        BaseHTMLProcessor.reset(self)
         self.tag_stack = []
         self.ignore_level = 0
 
     def feed(self, data):
-        _BaseHTMLProcessor.feed(self, data)
+        BaseHTMLProcessor.feed(self, data)
         while self.tag_stack:
-            _BaseHTMLProcessor.unknown_endtag(self, self.tag_stack.pop())
+            BaseHTMLProcessor.unknown_endtag(self, self.tag_stack.pop())
 
     def unknown_starttag(self, tag, attrs):
         if tag in self.ignorable_elements:
@@ -223,7 +221,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
 
             if tag not in self.elements_no_end_tag:
                 self.tag_stack.append(tag)
-            _BaseHTMLProcessor.unknown_starttag(self, tag, attrs)
+            BaseHTMLProcessor.unknown_starttag(self, tag, attrs)
 
     def unknown_endtag(self, tag):
         if tag in self.ignorable_elements:
@@ -240,10 +238,10 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
                 if top == tag:
                     match = True
                     break
-                _BaseHTMLProcessor.unknown_endtag(self, top)
+                BaseHTMLProcessor.unknown_endtag(self, top)
 
             if match:
-                _BaseHTMLProcessor.unknown_endtag(self, tag)
+                BaseHTMLProcessor.unknown_endtag(self, tag)
 
     def handle_pi(self, text):
         pass
@@ -254,7 +252,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
     def handle_data(self, text):
         if not self.ignore_level:
             text = text.replace('<', '')
-            _BaseHTMLProcessor.handle_data(self, text)
+            BaseHTMLProcessor.handle_data(self, text)
 
 
 def HTML(htmlSource, encoding='utf8', baseuri=None, required_attributes=None, addnofollow=False):
@@ -264,7 +262,7 @@ def HTML(htmlSource, encoding='utf8', baseuri=None, required_attributes=None, ad
     if addnofollow:
         required_attributes['a'] = [('rel', 'nofollow')]
 
-    p = _HTMLSanitizer(baseuri, encoding, required_attributes)
+    p = HTMLSanitizer(baseuri, encoding, required_attributes)
     p.feed(htmlSource)
     data = p.output()
 
