@@ -16,6 +16,7 @@ __version__ = (0, 33)
 
 if config.DEBUG:
     import chardet.constants
+
     chardet.constants._debug = 1
 
 _chardet = lambda data: chardet.detect(data)['encoding']
@@ -134,11 +135,12 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
     def handle_decl(self, text):
         # called for the DOCTYPE, if present, e.g.
         # <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        #     "http://www.w3.org/TR/html4/loose.dtd">
+        # "http://www.w3.org/TR/html4/loose.dtd">
         # Reconstruct original DOCTYPE
         self.pieces.append('<!%(text)s>' % locals())
 
     _new_declname_match = re.compile(r'[a-zA-Z][-_.a-zA-Z0-9:]*\s*').match
+
     def _scan_name(self, i, declstartpos):
         rawdata = self.rawdata
         n = len(rawdata)
@@ -162,6 +164,7 @@ class _BaseHTMLProcessor(sgmllib.SGMLParser):
         return ''.join(self.pieces)
         # used to be: [str(p) for p in self.pieces]
         # not sure why... -- ASw
+
 
 class _HTMLSanitizer(_BaseHTMLProcessor):
     acceptable_elements = config.HTML_SANITIZER__ACCEPTABLE_ELEMENTS
@@ -211,9 +214,11 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
         if tag in self.acceptable_elements:
             attrs = self.normalize_attrs(attrs)
             attrs = [(key, value) for key, value in attrs if key in self.acceptable_attributes]
-            attrs = [(key, ((tag, key) in self.relative_uris) and self.resolveURI(value) or value) for key, value in attrs]
+            attrs = [(key, ((tag, key) in self.relative_uris) and self.resolveURI(value) or value) for key, value in
+                     attrs]
             if self.required_attributes and tag in self.required_attributes:
-                attrs = [(key, value) for key, value in attrs if key not in [k for k, v in self.required_attributes[tag]]]
+                attrs = [(key, value) for key, value in attrs if
+                         key not in [k for k, v in self.required_attributes[tag]]]
                 attrs += self.required_attributes[tag]
 
             if tag not in self.elements_no_end_tag:
@@ -251,6 +256,7 @@ class _HTMLSanitizer(_BaseHTMLProcessor):
             text = text.replace('<', '')
             _BaseHTMLProcessor.handle_data(self, text)
 
+
 def HTML(htmlSource, encoding='utf8', baseuri=None, required_attributes=None, addnofollow=False):
     if not required_attributes:
         required_attributes = {}
@@ -270,14 +276,18 @@ def HTML(htmlSource, encoding='utf8', baseuri=None, required_attributes=None, ad
             try:
                 if tidy_interface == "uTidy":
                     from tidy import parseString as _utidy
+
                     def _tidy(data, **kwargs):
                         return str(_utidy(data, **kwargs))
+
                     break
                 elif tidy_interface == "mxTidy":
                     from mx.Tidy import Tidy as _mxtidy
+
                     def _tidy(data, **kwargs):
                         nerrors, nwarnings, data, errordata = _mxtidy.tidy(data, **kwargs)
                         return data
+
                     break
             except:
                 pass
@@ -301,6 +311,8 @@ def HTML(htmlSource, encoding='utf8', baseuri=None, required_attributes=None, ad
 
 
 _ebcdic_to_ascii_map = None
+
+
 def _ebcdic_to_ascii(s):
     global _ebcdic_to_ascii_map
 
@@ -337,6 +349,7 @@ def characters(text, isXML=False, guess=None):
     provide a Unicode string for it.
     """
     _triedEncodings = []
+
     def tryEncoding(encoding):
         if encoding and encoding not in _triedEncodings:
             if encoding == 'ebcdic':
@@ -348,11 +361,11 @@ def characters(text, isXML=False, guess=None):
             _triedEncodings.append(encoding)
 
     return (
-      tryEncoding(guess) or
-      tryEncoding(_detectbom(text)) or
-      isXML and tryEncoding(_detectbom(text, config.XML_BOM_MAP)) or
-      tryEncoding(_chardet(text)) or
-      tryEncoding('utf8') or
-      tryEncoding('windows-1252') or
-      tryEncoding('iso-8859-1')
+        tryEncoding(guess) or
+        tryEncoding(_detectbom(text)) or
+        isXML and tryEncoding(_detectbom(text, config.XML_BOM_MAP)) or
+        tryEncoding(_chardet(text)) or
+        tryEncoding('utf8') or
+        tryEncoding('windows-1252') or
+        tryEncoding('iso-8859-1')
     )
