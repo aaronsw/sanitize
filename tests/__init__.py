@@ -1,4 +1,6 @@
 """unit tests for sanitize"""
+import sanitize
+
 __author__ = "Aaron Swartz <http://www.aaronsw.com/>"
 __version__ = "0.33"
 __license__ = "public domain"
@@ -7,7 +9,6 @@ _adaptedfrom_ = [
   "http://feedparser.org/tests/wellformed/sanitize/",
   "http://alpha-geek.com/example/crazy_html2.html"]
 
-import sanitize
 
 def HTML(a, b, baseuri=None, addnofollow=False):
     try:
