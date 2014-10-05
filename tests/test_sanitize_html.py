@@ -78,3 +78,8 @@ class TestSanitizeHTML(TestCase):
         self._html(
             '<a href="http://www.ragingplatypus.com/" style="display:block; position:absolute; left:0; top:0; width:100%; height:100%; z-index:1; background-color:black; background-image:url(http://www.ragingplatypus.com/i/cam-full.jpg); background-x:center; background-y:center; background-repeat:repeat;">never trust your upstream platypus</a>',
             '<a href="http://www.ragingplatypus.com/">never trust your upstream platypus</a>')
+
+    def test_ignorables(self):
+        self._html('foo<style>bar', 'foo')
+        self._html('foo<style>bar</style>', 'foo')
+
