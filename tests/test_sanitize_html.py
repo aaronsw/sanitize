@@ -157,3 +157,7 @@ class TestSanitizeHTML(TestCase):
         self._html('<a title="foo<bar">test</a>', '<a title="foo<bar">test</a>')
         self._html('<a title="foo&lt;bar">test</a>', '<a title="foo<bar">test</a>')
 
+    def test_quote_characters(self):
+        self._html('<a title="&#34;">quote</a>', '<a title="&quot;">quote</a>')
+        self._html('<a title="&#39;">quote</a>', '<a title="\'">quote</a>')
+
