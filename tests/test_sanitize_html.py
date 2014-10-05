@@ -119,3 +119,9 @@ class TestSanitizeHTML(TestCase):
         self._html('<a href="foo">bar</a>', '<a href="http://baz.net/foo">bar</a>', base_uri='http://baz.net/')
         self._html('<a href="foo">bar</a>', '<a href="http://baz.net/foo">bar</a>', base_uri='http://baz.net/goo')
         self._html('<img src="foo" />', '<img src="http://baz.net/foo" />', base_uri='http://baz.net')
+
+    def test_auto_closers(self):
+        self._html('<img src="a">', '<img src="a" />')
+        self._html('<img src="a">foo</img>', '<img src="a" />foo')
+        self._html('</img>', '')
+
