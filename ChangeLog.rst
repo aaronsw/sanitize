@@ -7,3 +7,4 @@
 * Feature: Add ``setup.cfg`` for wheel support.`
 * Feature #2: Add travis-ci testing.
 * Feature #4: Using ``unittest`` for testing.
+* Feature #7: Add ``coveralls`` support.
