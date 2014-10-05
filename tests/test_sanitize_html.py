@@ -145,3 +145,15 @@ class TestSanitizeHTML(TestCase):
         self._html("AT&T", "AT&amp;T")
         self._html("http://example.org?a=1&b=2", "http://example.org?a=1&amp;b=2")
 
+    def test_attribute_values(self):
+        self._html('<a title="&">amp</a>', '<a title="&amp;">amp</a>')
+        self._html('<a title="AT&amp;T">test</a>', '<a title="AT&amp;T">test</a>')
+        self._html('<a title=\'"foo"\'>test</a>', '<a title="&quot;foo&quot;">test</a>')
+        self._html('<a title="&quot;foo&quot;">test</a>', '<a title="&quot;foo&quot;">test</a>')
+        self._html('<a title="foo&nbsp;bar">test</a>', '<a title="foo&nbsp;bar">test</a>')
+        self._html('<a title="foo&#xa0;bar">test</a>', '<a title="foo&#xa0;bar">test</a>')
+        self._html('<a title="foo&#xA0;bar">test</a>', '<a title="foo&#xA0;bar">test</a>')
+        self._html('<a title="foo&#160;bar">test</a>', '<a title="foo&#160;bar">test</a>')
+        self._html('<a title="foo<bar">test</a>', '<a title="foo<bar">test</a>')
+        self._html('<a title="foo&lt;bar">test</a>', '<a title="foo<bar">test</a>')
+
