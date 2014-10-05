@@ -6,7 +6,8 @@
 [![Format](https://pypip.in/format/sanitize/badge.png)](https://pypi.python.org/pypi/sanitize/)
 [![License](https://pypip.in/license/sanitize/badge.png)](https://pypi.python.org/pypi/sanitize/)
 
-`sanitize` is a Python module for making sure various things (e.g. HTML) are safe to use. It was originally written by Mark Pilgrim and is distributed under the BSD license.
+`sanitize` is a Python module for making sure various things (e.g. HTML) are safe to use. 
+It was originally written by Mark Pilgrim and is distributed under the BSD license.
 
 Usage:
 
