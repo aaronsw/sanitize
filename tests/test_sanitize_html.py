@@ -141,3 +141,7 @@ class TestSanitizeHTML(TestCase):
             self._html("&#xa0;", "&#xa0;")
             self._html("&#xA0;", "&#xA0;")
 
+    def test_unescaped_ampersands(self):
+        self._html("AT&T", "AT&amp;T")
+        self._html("http://example.org?a=1&b=2", "http://example.org?a=1&amp;b=2")
+
