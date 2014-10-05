@@ -19,3 +19,7 @@ class TestSanitizeHTML(TestCase):
             ),
             expected_data
         )
+    
+    def test_basics(self):
+        self._html("", "")
+        self._html("hello", "hello")
