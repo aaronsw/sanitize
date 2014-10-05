@@ -134,3 +134,10 @@ class TestSanitizeHTML(TestCase):
         self._html(
             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\r\n\r\n<html xmlns="http://www.w3.org/1999/xhtml">\r\n<head>\r\n<title>Crazy HTML -- Can Your Regex Parse This?</title>\r\n</head>\r\n<body    notRealAttribute="value"onload="executeMe();"foo="bar"\r\n\r\n>\r\n<!-- <script> -->\r\n\r\n<!-- \r\n\t<script> \r\n-->\r\n\r\n</script>\r\n\r\n\r\n<script\r\n\r\n\r\n>\r\n\r\nfunction executeMe()\r\n{\r\n\r\n\r\n\r\n\r\n/* <script> \r\nfunction am_i_javascript()\r\n{\r\n\tvar str = "Some innocuously commented out stuff";\r\n}\r\n< /script>\r\n*/\r\n\r\n\t\r\n\t\r\n\t\r\n\t\r\n\t\r\n\t\r\n\t\r\n\t\r\n\talert("Executed");\r\n}\r\n\r\n                                   </script\r\n\r\n\r\n\r\n>\r\n<h1>Did The Javascript Execute?</h1>\r\n<div notRealAttribute="value\r\n"onmouseover="\r\nexecuteMe();\r\n"foo="bar">\r\nI will execute here, too, if you mouse over me\r\n</div>\r\nThis is to keep you guys honest...<br />\r\nI like ontonology.  I like to script ontology.  Though, script>style>this.\r\n</body>\r\n</html>',
             'Crazy HTML -- Can Your Regex Parse This?\n\n\n<!-- <script> -->\n\n<!-- \n\t<script> \n-->\n\n\n\nfunction executeMe()\n{\n\n\n\n\n/* \n<h1>Did The Javascript Execute?</h1>\n<div>\nI will execute here, too, if you mouse over me\n</div>\nThis is to keep you guys honest...<br />\nI like ontonology.  I like to script ontology.  Though, script>style>this.')
+
+    def test_validate_entity_references(self):
+            self._html("&nbsp;", "&nbsp;")
+            self._html("&#160;", "&#160;")
+            self._html("&#xa0;", "&#xa0;")
+            self._html("&#xA0;", "&#xA0;")
+
