@@ -36,3 +36,14 @@ class TestSanitizeHTML(TestCase):
         self._html('<img>', '<img />')
         self._html('<img/>', '<img />')
         self._html('<b/></b>', '<b></b>')
+    
+    def test_balancing_angle_brakets(self):
+        self._html('<img src="foo"', '')
+        self._html('b>', 'b>')
+        self._html('<img src="foo"/', '')
+        self._html('>', '>')
+        self._html('foo<b', 'foo')
+        self._html('b>foo', 'b>foo')
+        self._html('><b', '>')
+        self._html('b><', 'b>')
+        self._html('><b>', '><b></b>')
