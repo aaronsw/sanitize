@@ -161,3 +161,14 @@ class TestSanitizeHTML(TestCase):
         self._html('<a title="&#34;">quote</a>', '<a title="&quot;">quote</a>')
         self._html('<a title="&#39;">quote</a>', '<a title="\'">quote</a>')
 
+    def test_adding_nofollow(self):
+        self._html(
+            html_source='<a href="http://spam.example.org/">viagra</a>',
+            expected_data='<a href="http://spam.example.org/" rel="nofollow">viagra</a>',
+             add_nofollow=True
+        )
+        self._html(
+            html_source='<a rel="foo" href="http://spam.example.org/">viagra</a>',
+             expected_data='<a href="http://spam.example.org/" rel="nofollow">viagra</a>',
+             add_nofollow=True
+        )
