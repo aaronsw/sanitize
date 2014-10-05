@@ -1,7 +1,31 @@
-from setuptools import setup, find_packages
+import unittest
+import sys
+
+from setuptools import setup, find_packages, Command
 
 
 PKG_NAME = 'sanitize'
+
+
+class RunTests(Command):
+    """
+    New setup.py command to run all tests for the package.
+    """
+    description = "run all tests for {0}".format(PKG_NAME)
+
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        tests = unittest.TestLoader().discover('.')
+        runner = unittest.TextTestRunner()
+        results = runner.run(tests)
+        sys.exit(not results.wasSuccessful())
 
 setup(
     name=PKG_NAME,
