@@ -23,3 +23,11 @@ class TestSanitizeHTML(TestCase):
     def test_basics(self):
         self._html("", "")
         self._html("hello", "hello")
+    
+    def test_balancing_tags(self):
+        self._html("<b>hello", "<b>hello</b>")
+        self._html("hello<b>", "hello<b></b>")
+        self._html("hello</b>", "hello")
+        self._html("hello<b/>", "hello<b></b>")
+        self._html("<b><b><b>hello", "<b><b><b>hello</b></b></b>")
+        self._html("</b><b>", "<b></b>")
