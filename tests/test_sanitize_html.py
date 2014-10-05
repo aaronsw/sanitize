@@ -125,3 +125,6 @@ class TestSanitizeHTML(TestCase):
         self._html('<img src="a">foo</img>', '<img src="a" />foo')
         self._html('</img>', '')
 
+    def test_cooments(self):
+        self._html('<!--foo-->', '<!--foo-->')
+        self._html('doo<!--', 'doo')
