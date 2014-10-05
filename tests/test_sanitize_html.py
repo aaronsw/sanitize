@@ -31,3 +31,8 @@ class TestSanitizeHTML(TestCase):
         self._html("hello<b/>", "hello<b></b>")
         self._html("<b><b><b>hello", "<b><b><b>hello</b></b></b>")
         self._html("</b><b>", "<b></b>")
+    
+    def test_trailing_slashes(self):
+        self._html('<img>', '<img />')
+        self._html('<img/>', '<img />')
+        self._html('<b/></b>', '<b></b>')
