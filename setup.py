@@ -27,6 +27,7 @@ class RunTests(Command):
         results = runner.run(tests)
         sys.exit(not results.wasSuccessful())
 
+
 setup(
     name=PKG_NAME,
     version=".".join(map(str, __import__(PKG_NAME).__version__)),
@@ -37,8 +38,8 @@ setup(
     maintainer='Alireza Savand',
     maintainer_email='alireza.savand@gmail.com',
     url='http://www.aaronsw.com/2002/sanitize/',
-    license=open('LICENCE').read(),
     cmdclass={'test': RunTests},
+    license=open('LICENSE').read(),
     packages=find_packages(),
     py_modules=[PKG_NAME],
     include_package_data=True,
