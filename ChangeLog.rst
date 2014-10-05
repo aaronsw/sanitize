@@ -5,3 +5,5 @@
 * Feature: Add ``ChangeLog.rst`` file.
 * Feature: Add ``AUTHORS.rst`` file.
 * Feature: Add ``setup.cfg`` for wheel support.`
+* Feature #2: Add travis-ci testing.
+* Feature #4: Using ``unittest`` for testing.
