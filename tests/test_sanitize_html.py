@@ -83,3 +83,18 @@ class TestSanitizeHTML(TestCase):
         self._html('foo<style>bar', 'foo')
         self._html('foo<style>bar</style>', 'foo')
 
+    def test_non_allowed_tags(self):
+        self._html('<script>', '')
+        self._html('<script', '')
+        self._html('<script/>', '')
+        self._html('</script>', '')
+        self._html('<script woo=yay>', '')
+        self._html('<script woo="yay">', '')
+        self._html('<script woo="yay>', '')
+        self._html('<script woo="yay<b>', '')
+        self._html('<script<script>>', '')
+        self._html('<<script>script<script>>', '')
+        self._html('<<script><script>>', '')
+        self._html('<<script>script>>', '')
+        self._html('<<script<script>>', '')
+        self._html('<scr\0ipt>', '')
