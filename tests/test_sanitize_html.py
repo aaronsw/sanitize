@@ -53,3 +53,28 @@ class TestSanitizeHTML(TestCase):
         self._html('<img asrc=foo>', '<img />')
         self._html('<img src=test test>', '<img src="test" />')
         self._html('<input type="checkbox" checked>', '<input type="checkbox" checked="checked" />')
+    
+    def test_dangerous_small_sample(self):
+        ## dangerous tags (a small sample)
+        sHTML = lambda x: self._html(x, 'safe <b>description</b>')
+        sHTML('safe<applet code="foo.class" codebase="http://example.com/"></applet> <b>description</b>')
+        sHTML('<notinventedyet>safe</notinventedyet> <b>description</b>')
+        sHTML('<blink>safe</blink> <b>description</b>')
+        sHTML('safe<embed src="http://example.com/"> <b>description</b>')
+        sHTML('safe<frameset rows="*"><frame src="http://example.com/"></frameset> <b>description</b>')
+        sHTML('safe<iframe src="http://example.com/"> <b>description</b></iframe>')
+        sHTML('safe<link rel="stylesheet" type="text/css" href="http://example.com/evil.css"> <b>description</b>')
+        sHTML('safe<meta http-equiv="Refresh" content="0; URL=http://example.com/"> <b>description</b>')
+        sHTML('safe<object classid="clsid:C932BA85-4374-101B-A56C-00AA003668DC"> <b>description</b>')
+        sHTML('safe<script type="text/javascript">location.href=\'http:/\'+\'/example.com/\';</script> <b>description</b>')
+
+        for x in ['onabort', 'onblur', 'onchange', 'onclick', 'ondblclick', 'onerror', 'onfocus', 'onkeydown', 'onkeypress',
+                  'onkeyup', 'onload', 'onmousedown', 'onmouseout', 'onmouseover', 'onmouseup', 'onreset', 'resize', 'onsubmit',
+                  'onunload']:
+            self._html(
+                '<img src="http://www.ragingplatypus.com/i/cam-full.jpg" %s="location.href=\'http://www.ragingplatypus.com/\';" />' % x,
+                '<img src="http://www.ragingplatypus.com/i/cam-full.jpg" />')
+        
+        self._html(
+            '<a href="http://www.ragingplatypus.com/" style="display:block; position:absolute; left:0; top:0; width:100%; height:100%; z-index:1; background-color:black; background-image:url(http://www.ragingplatypus.com/i/cam-full.jpg); background-x:center; background-y:center; background-repeat:repeat;">never trust your upstream platypus</a>',
+            '<a href="http://www.ragingplatypus.com/">never trust your upstream platypus</a>')
