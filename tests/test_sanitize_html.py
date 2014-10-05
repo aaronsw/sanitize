@@ -98,6 +98,7 @@ class TestSanitizeHTML(TestCase):
         self._html('<<script>script>>', '')
         self._html('<<script<script>>', '')
         self._html('<scr\0ipt>', '')
+
     def test_bad_protocols_small_sample(self):
         ## bad protocols (a small sample)
         self._html('<a href="http://foo">bar</a>', '<a href="http://foo">bar</a>')
@@ -112,3 +113,9 @@ class TestSanitizeHTML(TestCase):
         self._html('<a href="vbscript:foo">bar</a>', '<a href="#foo">bar</a>')
         self._html('<a href="view-source:foo">bar</a>', '<a href="#foo">bar</a>')
         self._html('<a href="notinventedyet:foo">bar</a>', '<a href="#foo">bar</a>')
+
+    def test_base_uris(self):
+        self._html('<a href="foo">bar</a>', '<a href="http://baz.net/foo">bar</a>', base_uri='http://baz.net')
+        self._html('<a href="foo">bar</a>', '<a href="http://baz.net/foo">bar</a>', base_uri='http://baz.net/')
+        self._html('<a href="foo">bar</a>', '<a href="http://baz.net/foo">bar</a>', base_uri='http://baz.net/goo')
+        self._html('<img src="foo" />', '<img src="http://baz.net/foo" />', base_uri='http://baz.net')
