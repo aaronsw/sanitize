@@ -47,3 +47,9 @@ class TestSanitizeHTML(TestCase):
         self._html('><b', '>')
         self._html('b><', 'b>')
         self._html('><b>', '><b></b>')
+    
+    def test_attributes(self):
+        self._html('<img src=foo>', '<img src="foo" />')
+        self._html('<img asrc=foo>', '<img />')
+        self._html('<img src=test test>', '<img src="test" />')
+        self._html('<input type="checkbox" checked>', '<input type="checkbox" checked="checked" />')
