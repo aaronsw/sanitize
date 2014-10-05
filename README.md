@@ -1,3 +1,11 @@
+[![Build Status](https://secure.travis-ci.org/Alir3z4/python-sanitize.png)](http://travis-ci.org/Alir3z4/python-sanitize)
+[![Downloads](https://pypip.in/d/sanitize/badge.png)](https://pypi.python.org/pypi/sanitize/)
+[![Version](https://pypip.in/v/sanitize/badge.png)](https://pypi.python.org/pypi/sanitize/)
+[![Egg?](https://pypip.in/egg/sanitize/badge.png)](https://pypi.python.org/pypi/sanitize/)
+[![Wheel?](https://pypip.in/wheel/sanitize/badge.png)](https://pypi.python.org/pypi/sanitize/)
+[![Format](https://pypip.in/format/sanitize/badge.png)](https://pypi.python.org/pypi/sanitize/)
+[![License](https://pypip.in/license/sanitize/badge.png)](https://pypi.python.org/pypi/sanitize/)
+
 `sanitize` is a Python module for making sure various things (e.g. HTML) are safe to use. It was originally written by Mark Pilgrim and is distributed under the BSD license.
 
 Usage:
