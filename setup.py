@@ -40,7 +40,7 @@ setup(
     url='http://www.aaronsw.com/2002/sanitize/',
     cmdclass={'test': RunTests},
     license=open('LICENSE').read(),
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     py_modules=[PKG_NAME],
     include_package_data=True,
     zip_safe=False,
