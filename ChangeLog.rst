@@ -8,3 +8,4 @@
 * Feature #2: Add travis-ci testing.
 * Feature #4: Using ``unittest`` for testing.
 * Feature #7: Add ``coveralls`` support.
+* Feature #8: Add ``MANIFEST.in`` file.
