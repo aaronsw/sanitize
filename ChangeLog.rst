@@ -11,4 +11,4 @@ Version 0000.0.0 - 0000-00-00
 * Feature #8: Add ``MANIFEST.in`` file.
 * Feature #5: Better Readme and documentation.
 * Feature #1: Python packaging done right.
-
+* Feature #9: Change version numbering.
