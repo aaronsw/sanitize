@@ -43,4 +43,33 @@ Usage
 To see more usage examples see `tests/test_sanitize_html.py`.
 
 
+Installation
+============
 
+`python-sanitize` is available on pypi
+
+http://pypi.python.org/pypi/python-sanitize
+
+So easily install it by `pip`:
+
+```
+pip install sanitize
+```
+
+Or by `easy_install`:
+
+```
+$ easy_install sanitize
+```
+
+Another way is by cloning `python-sanitize`'s git repository
+
+```
+$ git clone git://github.com/Alir3z4/python-sanitize.git
+```
+
+Then install it by running
+
+```
+$ python setup.py install
+```
