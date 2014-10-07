@@ -1,3 +1,5 @@
+# Sanitize
+
 [![Build Status](https://secure.travis-ci.org/Alir3z4/python-sanitize.png)](http://travis-ci.org/Alir3z4/python-sanitize)
 [![Coverage Status](https://coveralls.io/repos/Alir3z4/python-sanitize/badge.png)](https://coveralls.io/r/Alir3z4/python-sanitize)
 [![Downloads](https://pypip.in/d/sanitize/badge.png)](https://pypi.python.org/pypi/sanitize/)
