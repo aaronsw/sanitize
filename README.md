@@ -48,7 +48,7 @@ Installation
 
 `python-sanitize` is available on pypi
 
-http://pypi.python.org/pypi/python-sanitize
+http://pypi.python.org/pypi/sanitize
 
 So easily install it by `pip`:
 
