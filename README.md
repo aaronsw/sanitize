@@ -82,3 +82,9 @@ To run unit tests:
 ```
 $ python setup.py test
 ```
+
+
+License
+=======
+
+`Sanitize` is distributed under BSD license.
