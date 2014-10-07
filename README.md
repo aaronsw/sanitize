@@ -73,3 +73,12 @@ Then install it by running
 ```
 $ python setup.py install
 ```
+
+Tests
+=====
+
+To run unit tests:
+
+```
+$ python setup.py test
+```
