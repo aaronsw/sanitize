@@ -10,7 +10,7 @@ Usage:
 
 1. Update the version in `sanitize.py`
 2. Update the version in `setup.py`
-3. Run the test cases: `python sanitize_test.py`
-4. Run `python setup.py sdist upload`
+3. Run the test cases: `python3 sanitize_test.py`
+4. Run `python3 setup.py sdist upload`
 5. `git commit -am "released version XX"`
 6. `git push`
