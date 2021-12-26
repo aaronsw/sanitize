@@ -1,5 +1,5 @@
 """
-sanitize: bringing sanitiy to world of messed-up data
+sanitize: bringing sanity to world of messed-up data
 """
 import string
 import sgmllib
